@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { ThemeProvider } from './context/ThemeContext'
+import { StoreProvider } from './context/StoreContext'
 import Navbar from './components/layout/Navbar'
 import Footer from './components/layout/Footer'
 
@@ -14,6 +15,7 @@ import Docs from './pages/Docs'
 import Contact from './pages/Contact'
 import About from './pages/About'
 import HelpCenter from './pages/HelpCenter'
+import StorePreview from './pages/StorePreview'
 
 // Dashboard
 import DashboardLayout from './pages/dashboard/DashboardLayout'
@@ -38,8 +40,9 @@ function PublicLayout({ children }) {
 export default function App() {
   return (
     <ThemeProvider>
-      <BrowserRouter>
-        <Routes>
+      <StoreProvider>
+        <BrowserRouter>
+          <Routes>
           {/* Public routes */}
           <Route path="/" element={<PublicLayout><Home /></PublicLayout>} />
           <Route path="/pricing" element={<PublicLayout><Pricing /></PublicLayout>} />
@@ -58,6 +61,7 @@ export default function App() {
           {/* Auth routes (no nav/footer) */}
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/store-preview" element={<StorePreview />} />
 
           {/* Dashboard routes */}
           <Route path="/dashboard" element={<DashboardLayout />}>
@@ -83,6 +87,7 @@ export default function App() {
           } />
         </Routes>
       </BrowserRouter>
+      </StoreProvider>
     </ThemeProvider>
   )
 }
