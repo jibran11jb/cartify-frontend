@@ -16,16 +16,9 @@ export default function Chatbot() {
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef(null);
   
-  // Try to get theme settings from StoreContext to match Cartify theme
-  let primaryColor = '#00DC82'; // fallback Emerald
-  try {
-    const { settings } = useStore();
-    if (settings && settings.themeColor) {
-      primaryColor = settings.themeColor;
-    }
-  } catch (e) {
-    // If not wrapped in StoreProvider, ignore
-  }
+  const { settings } = useStore();
+  const primaryColor = settings?.themeColor || '#00DC82';
+  const apiKey = settings?.geminiApiKey || '';
 
   // Initialize with welcome message from session storage or create new
   useEffect(() => {
@@ -63,32 +56,55 @@ export default function Chatbot() {
     setInput('');
     setIsLoading(true);
 
-    try {
-      // Build history payload (excluding the new user message and formatting for API)
-      const history = messages.map(msg => ({
-        role: msg.role === 'ai' ? 'model' : 'user',
-        text: msg.text
-      }));
+    if (!apiKey) {
+      setTimeout(() => {
+        setMessages(prev => [...prev, { 
+          id: Date.now().toString(), 
+          role: 'ai', 
+          text: "Hi there! To use the AI Chatbot, please go to your Dashboard Settings ⚙️ and paste your Google Gemini API Key in the 'AI Integration' tab. (Don't worry, it stays securely in your browser!)" 
+        }]);
+        setIsLoading(false);
+      }, 800);
+      return;
+    }
 
-      const response = await fetch('http://localhost:3001/chat', {
+    try {
+      // Build history payload (including the new user message)
+      const contents = messages.map(msg => ({
+        role: msg.role === 'ai' ? 'model' : 'user',
+        parts: [{ text: msg.text }]
+      }));
+      contents.push({ role: 'user', parts: [{ text: textToSend }] });
+
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: textToSend, history })
+        body: JSON.stringify({ 
+          systemInstruction: {
+            parts: [{ text: "You are the Cartify AI Assistant, a friendly and professional customer support bot for an e-commerce SaaS platform called Cartify. Keep your answers short (2-3 sentences max). Be polite and helpful. Format nicely." }]
+          },
+          contents 
+        })
       });
 
       const data = await response.json();
       
-      if (response.ok && data.reply) {
-        setMessages(prev => [...prev, { id: Date.now().toString(), role: 'ai', text: data.reply }]);
+      if (response.ok && data.candidates && data.candidates.length > 0) {
+        const replyText = data.candidates[0].content.parts[0].text;
+        setMessages(prev => [...prev, { id: Date.now().toString(), role: 'ai', text: replyText }]);
       } else {
-        throw new Error(data.error || "Failed to get response");
+        throw new Error(data.error?.message || "Failed to get response");
       }
     } catch (error) {
       console.error("Chat error:", error);
+      let errorMsg = "I'm having trouble connecting right now. Please try again later. 😔";
+      if (error.message.includes("API key not valid")) {
+         errorMsg = "Oops! Your Gemini API key seems to be invalid. Please check your Dashboard Settings and try again.";
+      }
       setMessages(prev => [...prev, { 
         id: Date.now().toString(), 
         role: 'ai', 
-        text: "I'm having trouble connecting right now. Please try again later. 😔" 
+        text: errorMsg 
       }]);
     } finally {
       setIsLoading(false);

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { User, Store, Bell, CreditCard, Shield, Globe, Palette, Save } from 'lucide-react'
+import { User, Store, Bell, CreditCard, Shield, Globe, Palette, Save, Sparkles } from 'lucide-react'
+import { useStore } from '../../context/StoreContext'
 
 const tabs = [
   { label: 'Profile', icon: User },
@@ -10,13 +11,21 @@ const tabs = [
   { label: 'Security', icon: Shield },
   { label: 'Localization', icon: Globe },
   { label: 'Appearance', icon: Palette },
+  { label: 'AI Integration', icon: Sparkles },
 ]
 
 export default function Settings() {
   const [activeTab, setActiveTab] = useState('Profile')
   const [saved, setSaved] = useState(false)
+  const { settings, updateSettings } = useStore()
+
+  // Local state for the settings form before saving
+  const [localSettings, setLocalSettings] = useState({
+    geminiApiKey: settings?.geminiApiKey || ''
+  })
 
   const handleSave = () => {
+    updateSettings(localSettings)
     setSaved(true)
     setTimeout(() => setSaved(false), 2000)
   }
@@ -143,7 +152,44 @@ export default function Settings() {
             </div>
           )}
 
-          {!['Profile', 'Store', 'Notifications', 'Billing'].includes(activeTab) && (
+          {activeTab === 'AI Integration' && (
+            <div className="space-y-6">
+              <div className="p-4 rounded-xl bg-primary/5 border border-primary/20">
+                <div className="flex items-start gap-3">
+                  <div className="p-2 bg-white dark:bg-dark-surface rounded-lg shadow-sm">
+                    <Sparkles className="text-primary" size={24} />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-900 dark:text-white">Bring Your Own Key (BYOK)</h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                      Cartify Chatbot runs entirely in your browser using your own Google Gemini API key. We do not store your key on our servers. Your key is saved locally on your device.
+                    </p>
+                    <a href="https://aistudio.google.com/" target="_blank" rel="noopener noreferrer" className="text-sm text-primary hover:underline mt-2 inline-block font-medium">
+                      Get a free Gemini API key →
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                  Google Gemini API Key
+                </label>
+                <input 
+                  type="password" 
+                  value={localSettings.geminiApiKey}
+                  onChange={(e) => setLocalSettings({...localSettings, geminiApiKey: e.target.value})}
+                  placeholder="AIzaSy..." 
+                  className="input-field text-sm font-mono" 
+                />
+                <p className="text-xs text-gray-500 mt-2">
+                  Required to enable the AI Customer Support chatbot widget.
+                </p>
+              </div>
+            </div>
+          )}
+
+          {!['Profile', 'Store', 'Notifications', 'Billing', 'AI Integration'].includes(activeTab) && (
             <div className="text-center py-12 text-gray-400">
               <div className="text-4xl mb-3">⚙️</div>
               <p>{activeTab} settings coming soon</p>
