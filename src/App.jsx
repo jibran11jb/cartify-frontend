@@ -3,6 +3,7 @@ import { ThemeProvider } from './context/ThemeContext'
 import { StoreProvider } from './context/StoreContext'
 import Navbar from './components/layout/Navbar'
 import Footer from './components/layout/Footer'
+import Chatbot from './components/ui/Chatbot'
 
 // Pages
 import Home from './pages/Home'
@@ -86,6 +87,7 @@ export default function App() {
             </PublicLayout>
           } />
         </Routes>
+        <Chatbot />
       </BrowserRouter>
       </StoreProvider>
     </ThemeProvider>
