@@ -7,6 +7,21 @@ A premium, full-featured SaaS e-commerce platform frontend inspired by Shopify, 
 ![Vite](https://img.shields.io/badge/Vite-5-646CFF?style=for-the-badge&logo=vite)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3-38B2AC?style=for-the-badge&logo=tailwind-css)
 
+**🔗 [Live Demo](#) | 📖 [Documentation](#)**
+
+## 📸 Screenshots
+
+*(Replace these placeholders with actual screenshots of your app!)*
+
+<p align="center">
+  <img src="https://placehold.co/800x450/0f172a/00dc82?text=Landing+Page+Screenshot" width="48%" alt="Landing Page">
+  <img src="https://placehold.co/800x450/0f172a/00dc82?text=Dashboard+Screenshot" width="48%" alt="Dashboard">
+</p>
+<p align="center">
+  <img src="https://placehold.co/800x450/0f172a/00dc82?text=Store+Builder+Screenshot" width="48%" alt="Store Builder">
+  <img src="https://placehold.co/800x450/0f172a/00dc82?text=AI+Chatbot+Screenshot" width="48%" alt="AI Chatbot">
+</p>
+
 ## ✨ Features
 
 - 🌙 **Dark / Light Mode** — System-aware with localStorage persistence
