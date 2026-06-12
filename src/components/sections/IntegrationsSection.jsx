@@ -24,7 +24,7 @@ export default function IntegrationsSection() {
         </motion.div>
 
         {/* Integration Hub */}
-        <div className="relative flex justify-center items-center">
+        <div className="relative flex flex-col lg:flex-row justify-center items-center">
           {/* Center Hub */}
           <motion.div
             animate={{ rotate: 360 }}
@@ -41,7 +41,7 @@ export default function IntegrationsSection() {
           <motion.div
             animate={{ scale: [1, 1.05, 1] }}
             transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-            className="relative z-10 w-24 h-24 rounded-3xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-glow-lg mb-8 lg:mb-0"
+            className="relative lg:absolute z-10 w-24 h-24 rounded-3xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-glow-lg mb-8 lg:mb-0"
           >
             <span className="text-2xl font-bold text-dark">C</span>
             <div className="absolute inset-0 rounded-3xl bg-primary/20 blur-xl" />
